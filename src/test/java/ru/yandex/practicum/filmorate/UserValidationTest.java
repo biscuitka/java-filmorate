@@ -8,11 +8,12 @@ import javax.validation.Validator;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 public class UserValidationTest {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
-    public void testEmptyData(){
+    public void testEmptyData() {
         User user = new User();
         var violations = validator.validate(user);
         assertFalse(violations.isEmpty());

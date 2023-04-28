@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NoSpace {
     String message() default "Логин не должен содержать пробелов";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

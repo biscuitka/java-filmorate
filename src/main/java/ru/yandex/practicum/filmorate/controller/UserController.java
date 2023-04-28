@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User update(@Valid @RequestBody User user)  {
+    public User update(@Valid @RequestBody User user) {
         log.info("Обновление пользователя: {}", user);
         if (user.getId() != 0 && users.containsKey(user.getId())) {
             users.put(user.getId(), user);

@@ -16,7 +16,7 @@ public class FilmValidationTest {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     @Test
-    public void testEmptyData(){
+    public void testEmptyData() {
         Film film = new Film();
         film.setReleaseDate(LocalDate.now().minusYears(50));
         var violations = validator.validate(film);
