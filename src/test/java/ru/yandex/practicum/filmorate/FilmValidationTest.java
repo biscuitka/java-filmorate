@@ -8,7 +8,6 @@ import javax.validation.Validator;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FilmValidationTest {
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -40,9 +39,12 @@ public class FilmValidationTest {
 
         assertFalse(violations.isEmpty());
         assertEquals(3, violations.size());
-        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Описание не должно превышать 200 символов")));
-        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Продолжительность не может быть отрицательной")));
-        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals("Дата релиза должна быть позднее 28.12.1985")));
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals(
+                "Описание не должно превышать 200 символов")));
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals(
+                "Продолжительность не может быть отрицательной")));
+        assertTrue(violations.stream().anyMatch(v -> v.getMessage().equals(
+                "Дата релиза должна быть позднее 28.12.1985")));
 
     }
 }
