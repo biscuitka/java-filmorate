@@ -23,9 +23,9 @@ public class Film {
     @Size(max = 200, message = "Описание не должно превышать 200 символов")
     private String description;
 
-    @Positive(message = "Продолжительность не может быть отрицательной")
-    private Long duration;
-
     @DateOfRelease
     private LocalDate releaseDate;
+
+    @Positive(message = "Продолжительность не может быть отрицательной")
+    private Long duration;
 }
