@@ -29,12 +29,12 @@ public class FilmService {
         return filmStorage.createFilm(film);
     }
 
-    public Film updateFilm(Film film) {
-        return filmStorage.updateFilm(film);
-    }
-
     public void deleteFilmById(long id) {
         filmStorage.deleteFilmById(id);
+    }
+
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
     }
 
     public List<Film> getFilms() {
