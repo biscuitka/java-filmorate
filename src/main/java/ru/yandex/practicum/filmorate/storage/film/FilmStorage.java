@@ -10,7 +10,7 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
-    Film deleteFilmById(long id);
+    void deleteFilmById(long id);
 
     List<Film> getFilms();
 

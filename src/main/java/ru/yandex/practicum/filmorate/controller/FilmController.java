@@ -1,56 +1,49 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/films")
+@RequiredArgsConstructor
 @Slf4j
 public class FilmController {
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
-
-    @Autowired
-    public FilmController(FilmStorage filmStorage, FilmService filmService) {
-        this.filmStorage = filmStorage;
-        this.filmService = filmService;
-    }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         log.info("Добавление фильма: {}", film);
-        return filmStorage.createFilm(film);
+        return filmService.createFilm(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
         log.info("Обновление фильма: {}", film);
-        return filmStorage.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
     @GetMapping
     public List<Film> getFilms() {
-        log.info("Вывод всех фильмов: {}", filmStorage.getFilms().size());
-        return filmStorage.getFilms();
+        log.info("Вывод всех фильмов: {}", filmService.getFilms().size());
+        return filmService.getFilms();
     }
 
     @GetMapping("/{id}")
     public Film getById(@PathVariable long id) {
         log.info("Запрос фильма по id: {}", id);
-        return filmStorage.getFilmById(id);
+        return filmService.getFilmById(id);
     }
 
     @DeleteMapping("/{id}")
-    public Film deleteById(@PathVariable long id) {
+    public void deleteById(@PathVariable long id) {
         log.info("Удаление фильма по id: {}", id);
-        return filmStorage.deleteFilmById(id);
+        filmService.deleteFilmById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
