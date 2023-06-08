@@ -32,4 +32,8 @@ public class Film {
     private Set<Long> likes = new HashSet<>();
     private LinkedHashSet<Genre> genres = new LinkedHashSet<>();
     private Mpa mpa;
+
+    public boolean containsLike(Long userId) {
+        return likes.contains(userId);
+    }
 }

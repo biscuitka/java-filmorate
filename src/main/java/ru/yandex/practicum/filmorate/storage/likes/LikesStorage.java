@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.likes;
 
-import javax.validation.constraints.Positive;
 import java.util.List;
 
 public interface LikesStorage {
@@ -10,5 +9,5 @@ public interface LikesStorage {
 
     List<Long> getLikesFromUsers(long filmId);
 
-    List<Long> getMostLikedFilms(@Positive int count);
+    List<Long> getMostLikedFilms(int count);
 }
