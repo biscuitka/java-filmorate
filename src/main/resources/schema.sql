@@ -14,12 +14,12 @@ CREATE TABLE IF NOT EXISTS films (
   description varchar(200),
   release_date date,
   duration long,
-  mpa_id int NOT NULL REFERENCES mpa(mpa_id) ON DELETE RESTRICT
+  mpa_id int NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS film_genre (
-  film_id long REFERENCES films(film_id) ON DELETE CASCADE,
-  genre_id int REFERENCES genres(genre_id) ON DELETE RESTRICT,
+  film_id long,
+  genre_id int,
   PRIMARY KEY (film_id, genre_id)
 );
 
@@ -32,14 +32,14 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS film_likes (
-  film_id long REFERENCES films(film_id) ON DELETE CASCADE,
-  user_id long REFERENCES users(user_id) ON DELETE CASCADE,
+  film_id long,
+  user_id long,
   CONSTRAINT PK_film_likes PRIMARY KEY (film_id, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-  user_id long REFERENCES users(user_id) ON DELETE CASCADE,
-  friend_id long REFERENCES users(user_id) ON DELETE CASCADE,
+  user_id long,
+  friend_id long,
   friendship_status boolean,
   CONSTRAINT PK_friends PRIMARY KEY (user_id, friend_id)
 );
