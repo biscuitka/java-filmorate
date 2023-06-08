@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Sql(scripts = {"/schema.sql", "/friendDataTest.sql"},
+@Sql(scripts = {"/DropForTest.sql","/schema.sql", "/friendDataTest.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class FriendsDbStorageTest {
     private final FriendsDbStorage friendsDbStorage;
