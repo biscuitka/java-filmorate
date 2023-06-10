@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.friends.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -54,14 +53,10 @@ public class UserService {
     }
 
     public List<User> getAllFriends(long userId) {
-        return friendsStorage.getAllFriends(userId).stream()
-                .map(userStorage::getUserById)
-                .collect(Collectors.toList());
+        return friendsStorage.getAllFriends(userId);
     }
 
     public List<User> getCommonFriends(long userId, long otherId) {
-        return friendsStorage.getCommonFriends(userId, otherId).stream()
-                .map(userStorage::getUserById)
-                .collect(Collectors.toList());
+        return friendsStorage.getCommonFriends(userId, otherId);
     }
 }

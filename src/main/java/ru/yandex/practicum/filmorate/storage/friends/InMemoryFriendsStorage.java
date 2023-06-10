@@ -37,19 +37,29 @@ public class InMemoryFriendsStorage implements FriendsStorage {
         }
     }
 
-    public List<Long> getAllFriends(long userId) {
+    public List<User> getAllFriends(long userId) {
         User user = userStorage.getUserById(userId);
-        return new ArrayList<>(user.getFriends());
+        List<User> friends = new ArrayList<>();
+        for (Long friendId : user.getFriends()) {
+            User friend = userStorage.getUserById(friendId);
+            friends.add(friend);
+        }
+        return friends;
     }
 
-    public List<Long> getCommonFriends(long userId, long otherId) {
+    public List<User> getCommonFriends(long userId, long otherId) {
         User user = userStorage.getUserById(userId);
         User otherUser = userStorage.getUserById(otherId);
         Set<Long> userFriends = new HashSet<>(user.getFriends());
         Set<Long> otherUserFriends = new HashSet<>(otherUser.getFriends());
+
         userFriends.retainAll(otherUserFriends);
 
-        return new ArrayList<>(userFriends);
+        List<User> commonFriends = new ArrayList<>();
+        for (Long friendId : userFriends) {
+            commonFriends.add(userStorage.getUserById(friendId));
+        }
+        return commonFriends;
 
     }
 }

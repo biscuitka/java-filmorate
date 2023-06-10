@@ -47,7 +47,7 @@ public class UserDbStorage implements UserStorage {
             log.error("Ошибка при обновлении по id {}" + exp.getMessage(), user.getId());
             throw new NotFoundException("Пользователь с id" + user.getId() + "не найден");
         }
-        String sqlUpdate = "UPDATE users SET name = ?, login = ?, email =?, birthday = ? " +
+        String sqlUpdate = "UPDATE users SET name = ?, login = ?, email = ?, birthday = ? " +
                 "WHERE user_id = ?";
         jdbcTemplate.update(sqlUpdate, user.getName(), user.getLogin(),
                 user.getEmail(), user.getBirthday(), user.getId());
@@ -70,7 +70,6 @@ public class UserDbStorage implements UserStorage {
     public User getUserById(long id) {
         String sql = "SELECT * " +
                 "FROM users WHERE user_id = ?";
-        // return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
         try {
             return jdbcTemplate.queryForObject(sql, new UserMapper(), id);
         } catch (EmptyResultDataAccessException exp) {

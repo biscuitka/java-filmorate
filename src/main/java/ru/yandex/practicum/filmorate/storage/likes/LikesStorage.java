@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.likes;
 
+import ru.yandex.practicum.filmorate.model.Film;
+
 import java.util.List;
 
 public interface LikesStorage {
@@ -10,4 +12,6 @@ public interface LikesStorage {
     List<Long> getLikesFromUsers(long filmId);
 
     List<Long> getMostLikedFilms(int count);
+
+    List<Long> getLikesByFilms(List<Film> films);
 }

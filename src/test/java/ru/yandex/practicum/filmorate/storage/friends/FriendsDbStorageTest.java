@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Sql(scripts = {"/DropForTest.sql","/schema.sql", "/friendDataTest.sql"},
+@Sql(scripts = {"/DropForTest.sql", "/schema.sql", "/friendDataTest.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class FriendsDbStorageTest {
     private final FriendsDbStorage friendsDbStorage;
@@ -22,24 +23,36 @@ class FriendsDbStorageTest {
     @Test
     void addFriend() {
         friendsDbStorage.addFriend(1, 4);
-        assertThat(friendsDbStorage.getAllFriends(1)).isEqualTo(List.of(2L, 3L, 4L));
+        List<User> friends = friendsDbStorage.getAllFriends(1);
+        assertThat(friends.get(0).getId()).isEqualTo(2L);
+        assertThat(friends.get(1).getId()).isEqualTo(3L);
+        assertThat(friends.get(2).getId()).isEqualTo(4L);
     }
 
     @Test
     void deleteFriend() {
-        assertThat(friendsDbStorage.getAllFriends(3)).isEqualTo(List.of(1L, 4L));
-        friendsDbStorage.deleteFriend(3, 1);
-        assertThat(friendsDbStorage.getAllFriends(3)).isEqualTo(List.of(4L));
+        List<User> friends = friendsDbStorage.getAllFriends(1);
+        assertThat(friends.get(0).getId()).isEqualTo(2L);
+        assertThat(friends.get(1).getId()).isEqualTo(3L);
+        friendsDbStorage.deleteFriend(1, 2);
+        assertThat(friendsDbStorage.getAllFriends(1).get(0).getId()).isEqualTo(3L);
     }
 
     @Test
     void getAllFriends() {
-        assertThat(friendsDbStorage.getAllFriends(1)).isEqualTo(List.of(2L, 3L));
+        List<User> friends = friendsDbStorage.getAllFriends(1);
+        assertThat(friends.get(0).getId()).isEqualTo(2L);
+        assertThat(friends.get(0).getName()).isEqualTo("Bill Murray");
+        assertThat(friends.get(1).getId()).isEqualTo(3L);
+        assertThat(friends.get(1).getName()).isEqualTo("Jack Choo");
     }
 
     @Test
     void getCommonFriends() {
-        List<Long> common = friendsDbStorage.getCommonFriends(1, 4);
-        assertThat(common).isEqualTo(List.of(3L));
+        List<User> common = friendsDbStorage.getCommonFriends(1, 4);
+        assertThat(common.get(0).getId()).isEqualTo(3L);
+        assertThat(common.get(0).getName()).isEqualTo("Jack Choo");
+        assertThat(common.get(0).getEmail()).isEqualTo("jj@ya.ru");
+        assertThat(common).hasSize(1);
     }
 }

@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -60,7 +61,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularFilm(@RequestParam(name = "count", defaultValue = "10") int count) {
+    public List<Film> getPopularFilm(@RequestParam(name = "count", defaultValue = "10") @Positive int count) {
         log.info("Запрос {} самых популярных фильмов", count);
         return filmService.getMostLikedFilms(count);
     }

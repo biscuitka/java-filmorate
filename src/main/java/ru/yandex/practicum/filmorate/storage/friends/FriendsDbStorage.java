@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserMapper;
 
 import java.util.List;
 
@@ -28,19 +30,31 @@ public class FriendsDbStorage implements FriendsStorage {
     }
 
     @Override
-    public List<Long> getAllFriends(long userId) {
-        String sql = "SELECT friend_id " +
-                "FROM friends " +
-                "WHERE user_id = ?";
-        return jdbcTemplate.queryForList(sql, Long.class, userId);
+    public List<User> getAllFriends(long userId) {
+        String sql = "SELECT u.user_id, " +
+                "u.name, " +
+                "u.login, " +
+                "u.email, " +
+                "u.birthday " +
+                "FROM users AS u " +
+                "LEFT JOIN friends AS f ON f.friend_id = u.user_id " +
+                "WHERE f.user_id = ?";
+        return jdbcTemplate.query(sql, new UserMapper(), userId);
     }
 
     @Override
-    public List<Long> getCommonFriends(long userId, long otherId) {
-        String sql = "SELECT f1.friend_id " +
-                "FROM friends f1 JOIN friends f2 ON f1.friend_id = f2.friend_id " +
+    public List<User> getCommonFriends(long userId, long otherId) {
+        String sql = "SELECT u.user_id, " +
+                "u.name, " +
+                "u.login, " +
+                "u.email, " +
+                "u.birthday " +
+                "FROM users AS u " +
+                "JOIN friends AS f1 ON f1.friend_id = u.user_id " +
+                "JOIN friends AS f2 ON f2.friend_id = u.user_id " +
                 "WHERE f1.user_id = ? " +
                 "AND f2.user_id = ?";
-        return jdbcTemplate.queryForList(sql, Long.class, userId, otherId);
+
+        return jdbcTemplate.query(sql, new UserMapper(), userId, otherId);
     }
 }

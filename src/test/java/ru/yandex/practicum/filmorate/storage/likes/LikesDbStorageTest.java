@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 
 import java.util.List;
 
@@ -14,10 +16,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Sql(scripts = {"/DropForTest.sql","/schema.sql", "/likeDataTest.sql"},
+@Sql(scripts = {"/DropForTest.sql", "/schema.sql", "/likeDataTest.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class LikesDbStorageTest {
     private final LikesDbStorage likesDbStorage;
+    private final FilmDbStorage filmDbStorage;
 
 
     @Test
@@ -46,5 +49,13 @@ class LikesDbStorageTest {
     @Test
     void getMostLikedFilms() {
         assertThat(likesDbStorage.getMostLikedFilms(2)).isEqualTo(List.of(2L, 1L));
+    }
+
+    @Test
+    void getLikesByFilms() {
+        List<Film> films = filmDbStorage.getFilms();
+        List<Long> likesId = likesDbStorage.getLikesByFilms(films);
+        assertThat(likesId).hasSize(3);
+        assertThat(likesId).isEqualTo(List.of(1L, 1L, 2L));
     }
 }

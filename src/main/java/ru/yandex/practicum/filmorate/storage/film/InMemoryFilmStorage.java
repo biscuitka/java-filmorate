@@ -55,4 +55,14 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new NotFoundException("Фильм не найден");
         }
     }
+
+    @Override
+    public List<Film> getFilmsByIdList(List<Long> popularFilmId) {
+        List<Film> films = new ArrayList<>();
+        for (Long id : popularFilmId) {
+            Film film = getFilmById(id);
+            films.add(film);
+        }
+        return films;
+    }
 }

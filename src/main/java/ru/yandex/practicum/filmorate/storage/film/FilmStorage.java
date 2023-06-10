@@ -16,4 +16,5 @@ public interface FilmStorage {
 
     Film getFilmById(long id);
 
+    List<Film> getFilmsByIdList(List<Long> popularFilmId);
 }

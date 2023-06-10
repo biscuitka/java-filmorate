@@ -53,5 +53,12 @@ public class InMemoryLikesStorage implements LikesStorage {
 
     }
 
-
+    @Override
+    public List<Long> getLikesByFilms(List<Film> films) {
+        List<Long> likesIds = new ArrayList<>();
+        for (Film film : films) {
+            likesIds.addAll(getLikesFromUsers(film.getId()));
+        }
+        return likesIds;
+    }
 }

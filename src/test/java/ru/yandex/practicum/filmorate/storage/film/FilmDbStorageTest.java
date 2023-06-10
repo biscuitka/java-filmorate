@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaDbStorage;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,5 +86,16 @@ class FilmDbStorageTest {
         assertThat(filmDbStorage.getFilmById(2).getMpa())
                 .hasFieldOrPropertyWithValue("id", mpaDbStorage.getById(3).getId())
                 .hasFieldOrPropertyWithValue("name", mpaDbStorage.getById(3).getName());
+    }
+
+    @Test
+    void getFilmsByIdList() {
+        List<Long> ids = List.of(1L, 2L);
+        List<Film> films = filmDbStorage.getFilmsByIdList(ids);
+        assertThat(films).hasSize(2);
+        assertThat(films.get(0).getId()).isEqualTo(1L);
+        assertThat(films.get(0).getName()).isEqualTo("Moonrise Kingdom");
+        assertThat(films.get(1).getId()).isEqualTo(2L);
+        assertThat(films.get(1).getName()).isEqualTo("Men in Black");
     }
 }

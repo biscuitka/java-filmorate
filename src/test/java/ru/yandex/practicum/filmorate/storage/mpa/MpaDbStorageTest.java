@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@Sql(scripts = {"/DropForTest.sql","/schema.sql", "/mpaDataTest.sql", "/filmDataTest.sql"},
+@Sql(scripts = {"/DropForTest.sql", "/schema.sql", "/mpaDataTest.sql", "/filmDataTest.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class MpaDbStorageTest {
     private final MpaDbStorage mpaDbStorage;

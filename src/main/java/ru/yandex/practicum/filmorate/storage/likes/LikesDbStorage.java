@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -44,4 +48,17 @@ public class LikesDbStorage implements LikesStorage {
                 "LIMIT ?";
         return jdbcTemplate.queryForList(sql, Long.class, count);
     }
+
+    public List<Long> getLikesByFilms(List<Film> films) {
+        List<Long> filmIds = new ArrayList<>();
+        for (Film film : films) {
+            filmIds.add(film.getId());
+        }
+        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        String sql = "SELECT user_id FROM film_likes WHERE film_id IN (:filmIds)";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("filmIds", filmIds);
+        return namedParameterJdbcTemplate.queryForList(sql, parameters, Long.class);
+    }
+
 }

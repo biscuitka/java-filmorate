@@ -10,9 +10,8 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.likes.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import javax.validation.constraints.Positive;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,11 +35,28 @@ public class FilmService {
     }
 
     public List<Film> getFilms() {
-        return filmStorage.getFilms();
+        List<Film> films = filmStorage.getFilms();
+        List<Long> likes = likesStorage.getLikesByFilms(films);
+        loadListLikesToFilm(likes, films);
+        return films;
+    }
+
+    private void loadListLikesToFilm(List<Long> likes, List<Film> films) {
+        for (Film film : films) {
+            List<Long> filmLikes = new ArrayList<>();
+            for (Long like : likes) {
+                if (film.containsLike(like)) {
+                    filmLikes.add(like);
+                }
+            }
+            film.getLikes().addAll(filmLikes);
+        }
     }
 
     public Film getFilmById(long id) {
-        return filmStorage.getFilmById(id);
+        Film film = filmStorage.getFilmById(id);
+        film.getLikes().addAll(likesStorage.getLikesFromUsers(film.getId()));
+        return film;
     }
 
     public void addLike(long id, long userId) {
@@ -58,9 +74,12 @@ public class FilmService {
         likesStorage.deleteLike(id, userId);
     }
 
-    public List<Film> getMostLikedFilms(@Positive int count) {
-        return likesStorage.getMostLikedFilms(count).stream()
-                .map(filmStorage::getFilmById)
-                .collect(Collectors.toList());
+    public List<Film> getMostLikedFilms(int count) {
+        List<Long> popularFilmId = likesStorage.getMostLikedFilms(count);
+        List<Film> filmsByIds = filmStorage.getFilmsByIdList(popularFilmId);
+        List<Long> likes = likesStorage.getLikesByFilms(filmsByIds);
+        loadListLikesToFilm(likes, filmsByIds);
+
+        return filmsByIds;
     }
 }
