@@ -6,9 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -54,11 +52,14 @@ public class InMemoryLikesStorage implements LikesStorage {
     }
 
     @Override
-    public List<Long> getLikesByFilms(List<Film> films) {
-        List<Long> likesIds = new ArrayList<>();
+    public Map<Long, List<Long>> getLikesByFilms(List<Film> films) {
+        Map<Long, List<Long>> likesByFilms = new HashMap<>();
         for (Film film : films) {
-            likesIds.addAll(getLikesFromUsers(film.getId()));
+            List<Long> likes = getLikesFromUsers(film.getId());
+            if (!likes.isEmpty()) {
+                likesByFilms.putIfAbsent(film.getId(), likes);
+            }
         }
-        return likesIds;
+        return likesByFilms;
     }
 }

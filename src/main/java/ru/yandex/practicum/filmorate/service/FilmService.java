@@ -10,8 +10,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.likes.LikesStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,20 +35,16 @@ public class FilmService {
 
     public List<Film> getFilms() {
         List<Film> films = filmStorage.getFilms();
-        List<Long> likes = likesStorage.getLikesByFilms(films);
-        loadListLikesToFilm(likes, films);
+        Map<Long, List<Long>> filmsLikes = likesStorage.getLikesByFilms(films);
+        loadMapLikesToFilm(filmsLikes, films);
         return films;
     }
 
-    private void loadListLikesToFilm(List<Long> likes, List<Film> films) {
+    private void loadMapLikesToFilm(Map<Long, List<Long>> filmsLikes, List<Film> films) {
         for (Film film : films) {
-            List<Long> filmLikes = new ArrayList<>();
-            for (Long like : likes) {
-                if (film.containsLike(like)) {
-                    filmLikes.add(like);
-                }
-            }
-            film.getLikes().addAll(filmLikes);
+            List<Long> likes = filmsLikes.getOrDefault(film.getId(), new ArrayList<>());
+            Set<Long> filmLikes = new HashSet<>(likes);
+            film.setLikes(filmLikes);
         }
     }
 
@@ -62,7 +57,9 @@ public class FilmService {
     public void addLike(long id, long userId) {
         Film film = getFilmById(id);
         User user = userStorage.getUserById(userId);
-        likesStorage.addLike(film.getId(), user.getId());
+        if (!film.containsLike(user.getId())) {
+            likesStorage.addLike(film.getId(), user.getId());
+        }
     }
 
     public void deleteLike(long id, long userId) {
@@ -77,8 +74,8 @@ public class FilmService {
     public List<Film> getMostLikedFilms(int count) {
         List<Long> popularFilmId = likesStorage.getMostLikedFilms(count);
         List<Film> filmsByIds = filmStorage.getFilmsByIdList(popularFilmId);
-        List<Long> likes = likesStorage.getLikesByFilms(filmsByIds);
-        loadListLikesToFilm(likes, filmsByIds);
+        Map<Long, List<Long>> filmsLikes = likesStorage.getLikesByFilms(filmsByIds);
+        loadMapLikesToFilm(filmsLikes, filmsByIds);
 
         return filmsByIds;
     }

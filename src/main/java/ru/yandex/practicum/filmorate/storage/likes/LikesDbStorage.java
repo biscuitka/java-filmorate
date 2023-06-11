@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -49,16 +51,24 @@ public class LikesDbStorage implements LikesStorage {
         return jdbcTemplate.queryForList(sql, Long.class, count);
     }
 
-    public List<Long> getLikesByFilms(List<Film> films) {
+    public Map<Long, List<Long>> getLikesByFilms(List<Film> films) {
+        Map<Long, List<Long>> filmsLikes = new HashMap<>();
         List<Long> filmIds = new ArrayList<>();
         for (Film film : films) {
             filmIds.add(film.getId());
         }
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        String sql = "SELECT user_id FROM film_likes WHERE film_id IN (:filmIds)";
+        String sql = "SELECT user_id, film_id FROM film_likes WHERE film_id IN (:filmIds)";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("filmIds", filmIds);
-        return namedParameterJdbcTemplate.queryForList(sql, parameters, Long.class);
+        List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(sql, parameters);
+        for (Map<String, Object> row : rows) {
+            Long userId = (Long) row.get("user_id");
+            Long filmId = (Long) row.get("film_id");
+            List<Long> likes = filmsLikes.getOrDefault(filmId, new ArrayList<>());
+            likes.add(userId);
+            filmsLikes.put(filmId, likes);
+        }
+        return filmsLikes;
     }
-
 }

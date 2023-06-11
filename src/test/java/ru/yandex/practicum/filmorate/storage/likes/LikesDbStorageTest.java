@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,8 +55,9 @@ class LikesDbStorageTest {
     @Test
     void getLikesByFilms() {
         List<Film> films = filmDbStorage.getFilms();
-        List<Long> likesId = likesDbStorage.getLikesByFilms(films);
-        assertThat(likesId).hasSize(3);
-        assertThat(likesId).isEqualTo(List.of(1L, 1L, 2L));
+        Map<Long, List<Long>> likesId = likesDbStorage.getLikesByFilms(films);
+        assertThat(likesId).hasSize(2);
+        assertThat(likesId.get(1L)).isEqualTo(List.of(1L));
+        assertThat(likesId.get(2L)).isEqualTo(List.of(1L, 2L));
     }
 }
