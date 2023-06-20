@@ -70,6 +70,12 @@ public class FilmService {
         }
         likesStorage.deleteLike(id, userId);
     }
+    public List<Film> getCommonFilms(long userId, long friendId){
+        List<Film> films = filmStorage.getCommonFilms(userId,friendId);
+        Map<Long, List<Long>> filmsLikes = likesStorage.getLikesByFilms(films);
+        loadMapLikesToFilm(filmsLikes, films);
+        return films;
+    }
 
     public List<Film> getMostLikedFilms(int count) {
         List<Long> popularFilmId = likesStorage.getMostLikedFilms(count);
