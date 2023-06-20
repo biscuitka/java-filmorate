@@ -59,6 +59,12 @@ public class FilmController {
         log.info("Удалить лайк фильму по id: {}, от пользователя id: {}", id, userId);
         filmService.deleteLike(id, userId);
     }
+    @GetMapping(value = "/common")
+    public List<Film> getCommonFilms(
+            @RequestParam long userId,
+            @RequestParam long friendId) {
+        return filmService.getCommonFilms(userId, friendId);
+    }
 
     @GetMapping("/popular")
     public List<Film> getPopularFilm(@RequestParam(name = "count", defaultValue = "10") @Positive int count) {

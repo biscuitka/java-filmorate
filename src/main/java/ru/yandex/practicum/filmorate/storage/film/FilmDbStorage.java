@@ -131,6 +131,28 @@ public class FilmDbStorage implements FilmStorage {
         return namedParameterJdbcTemplate.query(sql, parameters, new FilmMapper());
     }
 
+    @Override
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        /*String sql = "SELECT film_id " +
+                "FROM film_likes " +
+                "WHERE user_id = ? " +
+                "INTERSECT SELECT film_id " +
+                "FROM film_likes " +
+                "WHERE user_id = ?" +
+                "GROUP BY user_id";*/
+        String sql = "SELECT f.film_id, f.name AS title, f.description, f.release_date, f.duration, f.mpa_id, m.name AS mpa, " +
+                "GROUP_CONCAT(g.genre_id) AS genre_ids, GROUP_CONCAT(g.name) AS genre_names " +
+                "FROM film_likes AS fl " +
+                "JOIN films AS f ON fl.film_id = f.film_id " +
+                "JOIN mpa AS m ON f.mpa_id = m.mpa_id " +
+                "LEFT JOIN film_genre AS fg ON f.film_id = fg.film_id " +
+                "LEFT JOIN genres AS g ON fg.genre_id = g.genre_id " +
+                "WHERE fl.user_id = ? AND f.film_id IN ( " +
+                "  SELECT film_id FROM film_likes WHERE user_id = ? " +
+                ") " +
+                "GROUP BY f.film_id";
+        return jdbcTemplate.query(sql, new FilmMapperWithMpaGenre(), userId, friendId);
+    }
 
     @Override
     public Film getFilmById(long id) {
